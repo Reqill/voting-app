@@ -2,14 +2,19 @@ import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 import "../styles/App.css"
 import signInWithGoogle from "../firebase";
-const BeforeVoting = ({ colors, changeCard,setToken }) => {
-    const endDate = 1643384799000;
-    const voteCount = 69;
-    const mostVotesClass = "3Bg"
-
-
+import { baseApiLink } from "../commonData";
+const BeforeVoting = ({ colors, changeCard,setToken,endDate }) => {
+    const [voteCount,setVoteCount] = useState(0);
+    const [mostVotesClass,setMostVotesClass] = useState("");
+    useEffect(()=>{
+        fetch(baseApiLink+"/votes/count").then(response=>response.json()).then(data=>{
+            setVoteCount(data.total);
+            setMostVotesClass(data.classes.sort((a,b)=>b.numberOfVotes - a.numberOfVotes)[0].class)
+          })
+    },[])
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
+            changeCard("after-voting");
             return <span>Zakończono głosowanie!</span>;
         } else {
             return (

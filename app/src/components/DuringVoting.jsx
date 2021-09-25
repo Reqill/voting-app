@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
+import { baseApiLink } from "../commonData";
 
 
 const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel }) => {
     const [hover, setHover] = useState(false)
-
+   
     return (
         <div
             className="candidate-box"
+            key = {idx}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             onClick={() => { setActiveIdx(idx) }}
@@ -22,20 +24,27 @@ const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel
 }
 
 
-const DuringVoting = ({ colors, changeCard }) => {
+const DuringVoting = ({ colors, changeCard, endDate, token }) => {
     const [activeIdx, setActiveIdx] = useState(null)
-    const endDate = 1633384799000;
+    const [candidates, setCandidates] = useState([]);
+    useEffect(()=>{
+        fetch(baseApiLink+"/candidates").then(response=>response.json()).then(data=>{
+            setCandidates(data);
+          })
+    },[])
 
     const _handleSubmit = (e) => {
         e.preventDefault()
+        console.log(token);
     }
 
-    const _renderOptions = (x) => {
-        return x.map((el, idx) => <VoteOption colors={colors} idx={idx} activeIdx={activeIdx} setActiveIdx={setActiveIdx} />)
+    const _renderOptions = () => {
+        return candidates.map((candidate) => <VoteOption colors={colors} idx={candidate.id} activeIdx={activeIdx} setActiveIdx={setActiveIdx} name={candidate.fullName} classLabel={candidate.className}/>)
     }
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
+            changeCard("after-voting");
             return <span>Zakończono głosowanie!</span>;
         } else {
             return (
@@ -58,7 +67,7 @@ const DuringVoting = ({ colors, changeCard }) => {
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
             <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 <div className="options center">
-                    {_renderOptions(["Adam","1"])}
+                    {_renderOptions()}
                 </div>
                 <button
                     className="vote-btn"

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 
-const BeforeTime = ({ colors, changeCard }) => {
-    const endDate = 163219840000;
+const BeforeTime = ({ colors, changeCard ,endDate}) => {
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {

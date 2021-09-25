@@ -12,6 +12,8 @@ const express = require("express");
 const authMiddleware = require('./authMiddleware.js');
 const app = express();
 const db = admin.firestore();
+const cors = require("cors");
+app.use( cors());
 function sendListResponse(query,res,specialCase = ""){
     let response = [];
     if(specialCase!==""){
@@ -99,6 +101,20 @@ function sendListResponse(query,res,specialCase = ""){
     }
    
 };
+function sendSingleResponse(query,res){
+    query.get()
+    .then((doc) => {    
+        if(typeof doc.data() != "undefined"){
+            temp = doc.data();
+            temp.id = doc.id; 
+            return res.status(200).send(temp);
+        }  
+        else{
+            return res.status(500).send({errorDescription: "Document you requested was not found"});
+        }
+       
+})
+}
 function AddToDb(type,req,res){
     var isValid = true;
     var verifiedData;
@@ -203,6 +219,14 @@ app.get('/api/votes',(req,res) => {
 app.get('/api/votes/count',(req,res) => {      
     try{
         sendListResponse(db.collection("vote"),res,"totalVotes");
+    }
+    catch(error){
+        return res.status(500).send({errorDescription: error});
+    }   
+});
+app.get('/api/settings',(req,res) => {      
+    try{
+        sendSingleResponse(db.collection("settings").doc("1"),res);
     }
     catch(error){
         return res.status(500).send({errorDescription: error});

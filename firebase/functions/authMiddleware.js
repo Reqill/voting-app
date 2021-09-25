@@ -1,10 +1,13 @@
 const admin = require("firebase-admin");
 const db = admin.firestore();
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client();
 module.exports = validateFirebaseIdToken = function(authType){
-    return async (req, res, next) => {
+   return async (req, res, next) => {
+   
   if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) &&
       !(req.cookies && req.cookies.__session)) {
-    res.status(403).send('Unauthorized');
+    res.status(403).send('Unauthorized1');
     return;
   }
 
@@ -17,39 +20,45 @@ module.exports = validateFirebaseIdToken = function(authType){
     idToken = req.cookies.__session;
   } else {
     // No cookie
-    res.status(403).send('Unauthorized');
+    res.status(403).send('Unauthorized2');
     return;
   }
 
   try {
-    const decodedIdToken = await admin.auth().verifyIdToken(idToken);
-    req.user = decodedIdToken;
-    if(type === "vote"){
-        if(decodedIdToken.email.endsWith("@lo1.gliwice.pl")){
-            db.collection("usedAccounts").doc(decodedIdToken.user_id).get().then(doc=>{
-                if(doc === undefined){
-                    db.collection("usedAccounts").doc(decodedIdToken.user_id).set({
+    const ticket = await client.verifyIdToken({
+        idToken: idToken,
+    });
+    const payload = ticket.getPayload();
+    const userid = payload['sub'];
+    if(authType === "vote"){
+        if(payload.hd === "lo1.gliwice.pl"){
+            db.collection("usedAccounts").doc(userid).get().then(doc=>{
+                if(doc.data() === undefined){
+                    db.collection("usedAccounts").doc(userid).set({
                         used: true
                     }).then(()=>{
                         next();
                         return;
                     })
+                }else{
+                    res.status(403).send({errorMessage:"z tego konta oddano już głos"});
                 }
             })
            
         }else{
-            res.status(403).send('Unauthorized');
+            res.status(403).send('Unauthorized3');
             return;
         }
     }
     else{
-        res.status(403).send('Unauthorized');
+        res.status(403).send('Unauthorized4');
         return;
     }
     
   } catch (error) {
-    res.status(403).send('Unauthorized');
+    res.status(403).send('Unauthorized5');
     return;
   }
-}};
+}
+};
 

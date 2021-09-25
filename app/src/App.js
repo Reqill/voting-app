@@ -5,6 +5,7 @@ import BeforeVoting from './components/BeforeVoting'
 import DuringVoting from './components/DuringVoting'
 import AfterVoting from './components/AfterVoting'
 import AfterTime from './components/AfterTime'
+import { baseApiLink } from './commonData';
 
 
 const colorScheme = {
@@ -20,6 +21,12 @@ const App = () => {
   const [colors, setColors] = useState(colorScheme)
   const [currentCard, setCurrentCard] = useState("before-time")
   const [token, setToken] = useState();
+  const [settings, setSettings] = useState({startTime:{_seconds:16325877560},endTime:{_seconds:163258775600}});
+  useEffect(()=>{
+    fetch(baseApiLink+"/settings").then(response=>response.json()).then(data=>{
+      setSettings(data);
+    })
+  },[])
   return (
     <div style={{ backgroundColor: colors.bgPage }} className="background">
       <main style={{ backgroundColor: colors.bgCard }}>
@@ -32,13 +39,13 @@ const App = () => {
             I Liceum Ogółnokształcące w Gliwicach
           </h2>
           {currentCard === "before-time" ?
-            <BeforeTime colors={colors} changeCard={setCurrentCard} /> :
+            <BeforeTime colors={colors} changeCard={setCurrentCard} endDate={settings.startTime._seconds*1000} /> :
             currentCard === "before-voting" ?
-              <BeforeVoting colors={colors} changeCard={setCurrentCard} setToken={setToken} /> :
+              <BeforeVoting colors={colors} changeCard={setCurrentCard} setToken={setToken} endDate={settings.endTime._seconds*1000}/> :
               currentCard === "during-voting" ?
-                <DuringVoting colors={colors} changeCard={setCurrentCard} /> :
+                <DuringVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds*1000} token={token}/> :
                 currentCard === "after-voting" ?
-                  <AfterVoting colors={colors} changeCard={setCurrentCard} /> :
+                  <AfterVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds*1000}/> :
                   currentCard === "after-time" ?
                     <AfterTime colors={colors} /> :
                     <p>WTF</p>
