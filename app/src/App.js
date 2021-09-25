@@ -19,7 +19,7 @@ const colorScheme = {
 const App = () => {
   const [colors, setColors] = useState(colorScheme)
   const [currentCard, setCurrentCard] = useState("before-time")
-
+  const [token, setToken] = useState();
   return (
     <div style={{ backgroundColor: colors.bgPage }} className="background">
       <main style={{ backgroundColor: colors.bgCard }}>
@@ -34,7 +34,7 @@ const App = () => {
           {currentCard === "before-time" ?
             <BeforeTime colors={colors} changeCard={setCurrentCard} /> :
             currentCard === "before-voting" ?
-              <BeforeVoting colors={colors} changeCard={setCurrentCard} /> :
+              <BeforeVoting colors={colors} changeCard={setCurrentCard} setToken={setToken} /> :
               currentCard === "during-voting" ?
                 <DuringVoting colors={colors} changeCard={setCurrentCard} /> :
                 currentCard === "after-voting" ?

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 import "../styles/App.css"
-
-const BeforeVoting = ({ colors, changeCard }) => {
-    const endDate = 1633384799000;
+import signInWithGoogle from "../firebase";
+const BeforeVoting = ({ colors, changeCard,setToken }) => {
+    const endDate = 1643384799000;
     const voteCount = 69;
     const mostVotesClass = "3Bg"
 
@@ -26,9 +26,12 @@ const BeforeVoting = ({ colors, changeCard }) => {
             );
         }
     };
-
+    const callback = (result) => {
+        setToken(result.idToken);
+        changeCard("during-voting");
+    }
     const _handleLogIn = () => {
-
+        signInWithGoogle(callback);
     }
 
     return (
@@ -47,7 +50,7 @@ const BeforeVoting = ({ colors, changeCard }) => {
                 </div>
                 <button
                     className="vote-btn"
-                    onClick={() => _handleLogIn}
+                    onClick={() => _handleLogIn()}
                     style={{ backgroundColor: colors.primary, color: 'white' }}
                 >
                     <p className="btn-label">Zagłosuj!</p>

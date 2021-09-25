@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 
 const BeforeTime = ({ colors, changeCard }) => {
-    const endDate = 1633298400000;
+    const endDate = 163219840000;
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
+            changeCard("before-voting");
             return <span>Można głosować!</span>;
         } else {
             return (
