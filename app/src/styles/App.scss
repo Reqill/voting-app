@@ -35,6 +35,7 @@ main{
     @include tablet-down(){
         border-radius: 0px;
         box-shadow: 0 5px 25px rgba(0,0,0,0);
+        height: 100vh;
     }
     transition: all 200ms ease-in-out;
 }
@@ -87,6 +88,9 @@ h2{
 .time-number{
     font-size: 3em;
     font-weight: 500;
+    @include tablet-down(){
+        font-size: 2em;
+    }
 }
 .countdown-label{
     margin: 0;
@@ -95,6 +99,9 @@ h2{
     font-weight: 500;
     margin-top: 30px;
     margin-bottom: -10px;
+    @include tablet-down(){
+        font-size: .8em;
+    }
 }
 .dummy{
     width: 95%;
@@ -111,5 +118,8 @@ h2{
         text-align: center;
         font-size: 1.1em;
         line-height: 1.5em;
+        @include tablet-down(){
+            font-size: .9em;
+        }
     }
 }

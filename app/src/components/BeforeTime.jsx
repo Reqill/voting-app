@@ -3,12 +3,12 @@ import Countdown from "react-countdown";
 
 
 
-const BeforeTime = ({ colors }) => {
+const BeforeTime = ({ colors, changeCard }) => {
     const endDate = 1633298400000;
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
-            return <span>complete!</span>;
+            return <span>Można głosować!</span>;
         } else {
             return (
                 <p>
@@ -26,16 +26,17 @@ const BeforeTime = ({ colors }) => {
     };
 
     return (
-        <div className="center" style={{ width: "100%", marginBottom: "10px" }}>
+        <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "10px" }}>
             <div className="dummy center">
                 <p>
                     tutaj będzie można oddać głos po rozpoczęciu głosowania
                 </p>
             </div>
-            <p className="countdown-label">Do głosowania pozostało:</p>
+            <p className="countdown-label" style={{ color: colors.header }}>Do głosowania pozostało:</p>
             <Countdown
                 date={endDate}
                 renderer={renderer}
+                onComplete={() => changeCard("before-voting")}
             />
         </div>
     )
