@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 
-
-
 const BeforeTime = ({ colors, changeCard }) => {
     const endDate = 1633298400000;
 

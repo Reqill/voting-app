@@ -18,7 +18,7 @@ const colorScheme = {
 
 const App = () => {
   const [colors, setColors] = useState(colorScheme)
-  const [currentCard, setCurrentCard] = useState("before-voting")
+  const [currentCard, setCurrentCard] = useState("before-time")
 
   return (
     <div style={{ backgroundColor: colors.bgPage }} className="background">
