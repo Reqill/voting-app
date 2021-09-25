@@ -26,9 +26,15 @@ const BeforeVoting = ({ colors, changeCard,setToken }) => {
             );
         }
     };
-    const callback = (result) => {
-        setToken(result.idToken);
-        changeCard("during-voting");
+    const callback = (credentials,user) => {
+        if(user.email.endsWith("@lo1.gliwice.pl")){
+            setToken(credentials.idToken);
+            changeCard("during-voting");
+        }
+        else{
+            console.log("to nie email szkolny");
+        }
+       
     }
     const _handleLogIn = () => {
         signInWithGoogle(callback);

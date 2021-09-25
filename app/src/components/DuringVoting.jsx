@@ -58,7 +58,7 @@ const DuringVoting = ({ colors, changeCard }) => {
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
             <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 <div className="options center">
-                    {_renderOptions()}
+                    {_renderOptions(["Adam","1"])}
                 </div>
                 <button
                     className="vote-btn"

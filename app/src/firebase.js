@@ -20,7 +20,7 @@ const signInWithGoogle = (callback) => {
     signInWithPopup(auth, provider)
     .then((result) => {
     const credential = GoogleAuthProvider.credentialFromResult(result);
-    callback(credential);
+    callback(credential, result.user);
     // ...
     }).catch((error) => {
         console.log(error);
