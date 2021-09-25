@@ -24,7 +24,7 @@ const DuringVoting = ({ colors, changeCard }) => {
     };
 
     return (
-        <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "10px" }}>
+        <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
             <p className="countdown-label" style={{ color: colors.header }}>Do zakończenia głosowania pozostało:</p>
             <Countdown
                 date={endDate}

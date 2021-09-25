@@ -26,7 +26,7 @@ const BeforeTime = ({ colors, changeCard }) => {
     };
 
     return (
-        <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "10px" }}>
+        <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
             <div className="dummy center">
                 <p>
                     tutaj będzie można oddać głos po rozpoczęciu głosowania
