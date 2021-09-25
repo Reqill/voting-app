@@ -1,0 +1,157 @@
+body {
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: none;
+  margin: 0;
+  padding: 0;
+}
+
+.background {
+  width: 100%;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+main {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-height: 810px;
+  max-width: 620px;
+  border-radius: 15px;
+  -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+  -webkit-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+
+@media (max-width: 620px) {
+  main {
+    border-radius: 0px;
+    -webkit-box-shadow: 0 5px 25px rgba(0, 0, 0, 0);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0);
+  }
+}
+
+.upper-row {
+  height: 15px;
+  width: 100%;
+  max-width: 620px;
+  display: none;
+}
+
+@media (max-width: 620px) {
+  .upper-row {
+    display: block;
+  }
+}
+
+h1 {
+  font-weight: 800;
+  text-align: center;
+  font-size: 2em;
+  margin: 0;
+  margin-top: 15px;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: .005em;
+  -webkit-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+
+@media (max-width: 620px) {
+  h1 {
+    font-size: 1.7em;
+  }
+}
+
+h2 {
+  font-weight: 500;
+  text-align: center;
+  font-size: 1em;
+  padding: 0;
+  margin: 7px 0;
+  -webkit-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+}
+
+@media (max-width: 620px) {
+  h2 {
+    font-size: .8em;
+  }
+}
+
+.center {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.time-label {
+  font-size: .9em;
+}
+
+.time-number {
+  font-size: 3em;
+  font-weight: 500;
+}
+
+.countdown-label {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
+  font-weight: 500;
+  margin-top: 30px;
+  margin-bottom: -10px;
+}
+
+.dummy {
+  width: 95%;
+  height: 300px;
+  margin-top: 25px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px dashed rgba(0, 0, 0, 0.05);
+}
+
+.dummy p {
+  color: rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+  max-width: 350px;
+  text-align: center;
+  font-size: 1.1em;
+  line-height: 1.5em;
+}
+/*# sourceMappingURL=App.css.map */
