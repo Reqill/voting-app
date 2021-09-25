@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const AfterTime = ({ colors }) => {
+const AfterTime = ({ colors, changeCard }) => {
     return (
         <p>
             AfterTime

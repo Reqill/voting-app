@@ -24,7 +24,7 @@ const App = () => {
     <div style={{ backgroundColor: colors.bgPage }} className="background">
       <main style={{ backgroundColor: colors.bgCard }}>
         <div className="upper-row" style={{ backgroundColor: colors.bgPage }} />
-        <div className="center" style={{ padding: "10px 20px 15px 20px" }}>
+        <div className="center" style={{ padding: "20px 20px 15px 20px" }}>
           <h1 style={{ color: colors.header }}>
             Głosowanie na Marszałka
           </h1>
@@ -32,13 +32,13 @@ const App = () => {
             I Liceum Ogółnokształcące w Gliwicach
           </h2>
           {currentCard === "before-time" ?
-            <BeforeTime colors={colors} /> :
+            <BeforeTime colors={colors} changeCard={setCurrentCard} /> :
             currentCard === "before-voting" ?
-              <BeforeVoting colors={colors} /> :
+              <BeforeVoting colors={colors} changeCard={setCurrentCard} /> :
               currentCard === "during-voting" ?
-                <DuringVoting colors={colors} /> :
+                <DuringVoting colors={colors} changeCard={setCurrentCard} /> :
                 currentCard === "after-voting" ?
-                  <AfterVoting colors={colors} /> :
+                  <AfterVoting colors={colors} changeCard={setCurrentCard} /> :
                   currentCard === "after-time" ?
                     <AfterTime colors={colors} /> :
                     <p>WTF</p>
