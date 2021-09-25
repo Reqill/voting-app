@@ -47,7 +47,7 @@ const BeforeVoting = ({ colors, changeCard }) => {
                 </div>
                 <button
                     className="vote-btn"
-                    onClick={() => _handleLogIn}
+                    onClick={() => _handleLogIn()}
                     style={{ backgroundColor: colors.primary, color: 'white' }}
                 >
                     <p className="btn-label">Zagłosuj!</p>
