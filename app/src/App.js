@@ -24,7 +24,7 @@ const App = () => {
     <div style={{ backgroundColor: colors.bgPage }} className="background">
       <main style={{ backgroundColor: colors.bgCard }}>
         <div className="upper-row" style={{ backgroundColor: colors.bgPage }} />
-        <div className="center" style={{ padding: "20px 20px 15px 20px" }}>
+        <div className="center" style={{ padding: "20px 20px 15px 20px", position: "relative" }}>
           <h1 style={{ color: colors.header }}>
             Głosowanie na Marszałka
           </h1>
@@ -43,6 +43,7 @@ const App = () => {
                     <AfterTime colors={colors} /> :
                     <p>WTF</p>
           }
+          <p className="signed" style={{ color: colors.description }}>{'By: Maciuga Adam & Mrózek Mikołaj'}</p>
         </div>
 
 
