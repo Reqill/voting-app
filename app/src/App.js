@@ -1,23 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import './styles/App.css';
+import BeforeTime from './components/BeforeTime'
+import BeforeVoting from './components/BeforeVoting'
+import DuringVoting from './components/DuringVoting'
+import AfterVoting from './components/AfterVoting'
+import AfterTime from './components/AfterTime'
 
-function App() {
+
+const colorScheme = {
+  primary: "#e6710b",
+  secondary: "",
+  bgPage: "#f5a21c",
+  bgCard: "#FAFAFA",
+  header: "#111111",
+  description: "#666666"
+}
+
+const App = () => {
+  const [colors, setColors] = useState(colorScheme)
+  const [currentCard, setCurrentCard] = useState("before-time")
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ backgroundColor: colors.bgPage }} className="background">
+      <main style={{ backgroundColor: colors.bgCard }}>
+        <div className="upper-row" style={{ backgroundColor: colors.bgPage }} />
+        <div className="center" style={{ padding: "10px 20px 15px 20px" }}>
+          <h1 style={{ color: colors.header }}>
+            Głosowanie na Marszałka
+          </h1>
+          <h2 style={{ color: colors.description }}>
+            I Liceum Ogółnokształcące w Gliwicach
+          </h2>
+          {currentCard === "before-time" ?
+            <BeforeTime colors={colors} /> :
+            currentCard === "before-voting" ?
+              <BeforeVoting colors={colors} /> :
+              currentCard === "during-voting" ?
+                <DuringVoting colors={colors} /> :
+                currentCard === "after-voting" ?
+                  <AfterVoting colors={colors} /> :
+                  currentCard === "after-time" ?
+                    <AfterTime colors={colors} /> :
+                    <p>WTF</p>
+          }
+        </div>
+
+
+      </main>
     </div>
   );
 }
