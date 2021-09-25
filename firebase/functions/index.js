@@ -15,52 +15,72 @@ const db = admin.firestore();
 function sendListResponse(query,res,specialCase = ""){
     let response = [];
     if(specialCase!==""){
-        Promise.all([query.get(),db.collection("vote").get(),db.collection("settings").doc("1").get()]).then(([candidatesSnapshot,votesSnapshot,settingsSnapshot])=>{
-            let candidates = [[],[]];
-            let settings = settingsSnapshot.data();
-            if(settings.showResoults === true || specialCase === "specialShowing")
-            {
-                candidatesSnapshot.forEach((doc)=>{
-                    candidates[0].push({...doc.data(),id:doc.id});
-                    candidates[1].push(0);
-                })
-                votesSnapshot.forEach((doc)=>{
-                    let vote = doc.data();
-                    for(i = 0;i<candidates[0].length;i++){
-                        if(candidates[0][i].id === vote.submitVote){
-                            if(settings.startTime._seconds < vote.submitDate._seconds && vote.submitDate._seconds < settings.endTime._seconds){
-                                candidates[1][i]++;
+        if(specialCase === "totalVotes"){
+            let classes = [[],[]];
+            let total = 0;
+            query.get().then((snapshot)=>{
+               snapshot.forEach(doc=>{
+                   total++;
+                   if(classes[0].includes(doc.data().className)){
+                       classes[1][classes[0].indexOf(doc.data().className)]++;
+                   }else{
+                       classes[0].push(doc.data().className);
+                       classes[1].push(1);
+                   }
+               })
+               for(i=0;i<classes[0].length;i++){
+                    response.push({class:classes[0][i], numberOfVotes: classes[1][i]});
+               }
+               return res.status(200).send({total: total,classes:response});   
+            })
+        }else{
+            Promise.all([query.get(),db.collection("vote").get(),db.collection("settings").doc("1").get()]).then(([candidatesSnapshot,votesSnapshot,settingsSnapshot])=>{
+                let candidates = [[],[]];
+                let settings = settingsSnapshot.data();
+                if(settings.showResoults === true || specialCase === "specialShowing")
+                {
+                    candidatesSnapshot.forEach((doc)=>{
+                        candidates[0].push({...doc.data(),id:doc.id});
+                        candidates[1].push(0);
+                    })
+                    votesSnapshot.forEach((doc)=>{
+                        let vote = doc.data();
+                        for(i = 0;i<candidates[0].length;i++){
+                            if(candidates[0][i].id === vote.submitVote){
+                                if(settings.startTime._seconds < vote.submitDate._seconds && vote.submitDate._seconds < settings.endTime._seconds){
+                                    candidates[1][i]++;
+                                }
+                                
                             }
-                            
+                        }
+                    })
+                    if(specialCase === "specialShowing"){
+                        for(i = 0;i<candidates[1].length;i++){
+                            if(candidates[1][i]  >= settings.showNumber){
+                                response.push(candidates[0][i]);
+                            }
                         }
                     }
-                })
-                if(specialCase === "specialShowing"){
-                    for(i = 0;i<candidates[1].length;i++){
-                        if(candidates[1][i]  >= settings.showNumber){
-                            response.push(candidates[0][i]);
+                    else if(specialCase === "countVotes" && settings.showResoults === true){
+                        for(i = 0;i<candidates[1].length;i++){
+                           response.push({...candidates[0][i], votes: candidates[1][i]})
                         }
                     }
-                }
-                else if(specialCase === "countVotes" && settings.showResoults === true){
-                    for(i = 0;i<candidates[1].length;i++){
-                       response.push({...candidates[0][i], votes: candidates[1][i]})
-                    }
-                }
-                return res.status(200).send(response);   
-            }
-            else{
-                if(specialCase === "countVotes"){
-                    return res.status(403).send({errorMessage:"Nie możesz jeszcze odczytać głosów"});   
+                    return res.status(200).send(response);   
                 }
                 else{
-                    return res.status(403).send({errorMessage:"Nieoczekiwany błąd"});   
+                    if(specialCase === "countVotes"){
+                        return res.status(403).send({errorMessage:"Nie możesz jeszcze odczytać głosów"});   
+                    }
+                    else{
+                        return res.status(403).send({errorMessage:"Nieoczekiwany błąd"});   
+                    }
                 }
-            }
-        })
+            })
+        }
+       
     }
     else{
-        console.log("I am not here");
         query.get()
         .then((querySnapshot) => {                   
             querySnapshot.forEach((doc) => { 
@@ -175,6 +195,14 @@ app.get('/api/candidates', (req,res) => {
 app.get('/api/votes',(req,res) => {      
     try{
         sendListResponse(db.collection("candidate"),res,"countVotes");
+    }
+    catch(error){
+        return res.status(500).send({errorDescription: error});
+    }   
+});
+app.get('/api/votes/count',(req,res) => {      
+    try{
+        sendListResponse(db.collection("vote"),res,"totalVotes");
     }
     catch(error){
         return res.status(500).send({errorDescription: error});
