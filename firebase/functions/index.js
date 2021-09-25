@@ -10,9 +10,7 @@ admin.initializeApp({
 const express = require("express");
 
 const authMiddleware = require('./authMiddleware.js');
-
 const app = express();
-
 const db = admin.firestore();
 function sendListResponse(query,res,specialCase = ""){
     let response = [];
@@ -59,9 +57,6 @@ function sendListResponse(query,res,specialCase = ""){
                     return res.status(403).send({errorMessage:"Nieoczekiwany błąd"});   
                 }
             }
-            
-           
-           
         })
     }
     else{
@@ -84,36 +79,11 @@ function sendListResponse(query,res,specialCase = ""){
     }
    
 };
-function sendSingleResponse(query,res,specialCase=""){
-    query.get()
-    .then((doc) => {    
-        if(typeof doc.data() != "undefined"){
-            temp = doc.data();
-            temp.id = doc.id; 
-            return res.status(200).send(temp);
-        }  
-        else{
-            return res.status(500).send({errorDescription: "Document nie znaleziony"});
-        }
-})};
 function AddToDb(type,req,res){
     var isValid = true;
     var verifiedData;
     var data = req.body;
     switch(type){
-        // case "candidate":
-        //     if( typeof data.fullName != "string"|| data.fullName == ""||
-        //     typeof data.className != "string"|| data.shortName == "")
-        //     {
-        //         isValid = false;
-        //     }
-        //     else{
-        //         verifiedData = {
-        //             fullName:data.fullName,
-        //             className:data.className
-        //         };
-        //     }
-        //     break;
         case "vote":
             if(
             typeof data.submitVote != "string"|| data.submitVote == ""||
@@ -173,7 +143,7 @@ function AddToDb(type,req,res){
    
 
 }
-app.post('/api/vote', /*authMiddleware("vote"),*/(req,res) => {      
+app.post('/api/vote', authMiddleware("vote"),(req,res) => {      
     try{
         AddToDb("vote",req,res)      
     }
@@ -181,7 +151,7 @@ app.post('/api/vote', /*authMiddleware("vote"),*/(req,res) => {
         return res.status(500).send({errorDescription: error});
     }   
 });
-app.post('/api/addCandidate', /*authMiddleware("vote"),*/(req,res) => {      
+app.post('/api/addCandidate', authMiddleware("vote"),(req,res) => {      
     try{
         AddToDb("addCandidate",req,res)      
     }
@@ -189,7 +159,7 @@ app.post('/api/addCandidate', /*authMiddleware("vote"),*/(req,res) => {
         return res.status(500).send({errorDescription: error});
     }   
 });
-app.get('/api/candidates', /*authMiddleware("getCandidates"),*/(req,res) => {      
+app.get('/api/candidates', (req,res) => {      
     try{
         if(req.query.specialShowing=="true"){
             sendListResponse(db.collection("candidate"),res,"specialShowing");  
@@ -202,7 +172,7 @@ app.get('/api/candidates', /*authMiddleware("getCandidates"),*/(req,res) => {
         return res.status(500).send({errorDescription: error});
     }   
 });
-app.get('/api/votes', /*authMiddleware("getCandidates"),*/(req,res) => {      
+app.get('/api/votes',(req,res) => {      
     try{
         sendListResponse(db.collection("candidate"),res,"countVotes");
     }
