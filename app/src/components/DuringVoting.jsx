@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 
 
-const VoteOpion = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel }) => {
+const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel }) => {
     const [hover, setHover] = useState(false)
 
     return (
@@ -10,6 +10,7 @@ const VoteOpion = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel 
             className="candidate-box"
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
+            onClick={() => { setActiveIdx(idx) }}
             style={{
 
             }}
@@ -27,6 +28,10 @@ const DuringVoting = ({ colors, changeCard }) => {
 
     const _handleSubmit = (e) => {
         e.preventDefault()
+    }
+
+    const _renderOptions = (x) => {
+        return x.map((el, idx) => <VoteOption colors={colors} idx={idx} activeIdx={activeIdx} setActiveIdx={setActiveIdx} />)
     }
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -53,7 +58,7 @@ const DuringVoting = ({ colors, changeCard }) => {
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
             <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 <div className="options center">
-
+                    {_renderOptions()}
                 </div>
                 <button
                     className="vote-btn"
