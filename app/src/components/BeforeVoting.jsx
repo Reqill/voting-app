@@ -9,7 +9,7 @@ const BeforeVoting = ({ colors, changeCard,setToken,endDate }) => {
     useEffect(()=>{
         fetch(baseApiLink+"/votes/count").then(response=>response.json()).then(data=>{
             setVoteCount(data.total);
-            setMostVotesClass(data.classes.sort((a,b)=>b.numberOfVotes - a.numberOfVotes)[0].class)
+            setMostVotesClass(data.classes.sort((a,b)=>b.numberOfVotes - a.numberOfVotes)[0]?.class)
           })
     },[])
     const renderer = ({ days, hours, minutes, seconds, completed }) => {

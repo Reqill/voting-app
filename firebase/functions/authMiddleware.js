@@ -3,7 +3,7 @@ const db = admin.firestore();
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client();
 module.exports = validateFirebaseIdToken = function(authType){
-   return async (req, res, next) => {
+   return (async (req, res, next) => {
    
   if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) &&
       !(req.cookies && req.cookies.__session)) {
@@ -59,6 +59,6 @@ module.exports = validateFirebaseIdToken = function(authType){
     res.status(403).send('Unauthorized5');
     return;
   }
-}
+})
 };
 

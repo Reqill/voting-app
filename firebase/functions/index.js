@@ -3,8 +3,7 @@ const admin = require("firebase-admin");
 var serviceAccount = require("./permissions.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL:   "localhost:8080" 
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const express = require("express");
@@ -59,7 +58,10 @@ function sendListResponse(query,res,specialCase = ""){
                     if(specialCase === "specialShowing"){
                         for(i = 0;i<candidates[1].length;i++){
                             if(candidates[1][i]  >= settings.showNumber){
-                                response.push(candidates[0][i]);
+                                response.push({...candidates[0][i],reachedTreshold:true});
+                            }
+                            else{
+                                response.push({...candidates[0][i],reachedTreshold:false});
                             }
                         }
                     }

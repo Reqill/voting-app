@@ -23,8 +23,13 @@ const App = () => {
   const [token, setToken] = useState();
   const [settings, setSettings] = useState({startTime:{_seconds:16325877560},endTime:{_seconds:163258775600}});
   useEffect(()=>{
+
+    console.log("DOWNLOADING");
     fetch(baseApiLink+"/settings").then(response=>response.json()).then(data=>{
-      setSettings(data);
+      if(data.startTime !== undefined && data.endTime !== undefined){
+        setSettings(data);  
+      }
+      
     })
   },[])
   return (

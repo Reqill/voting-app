@@ -1,1 +1,1 @@
-export const baseApiLink = "http://localhost:5001/voting-lo1/europe-west1/app/api";
+export const baseApiLink = "https://europe-west1-voting-lo1.cloudfunctions.net/app/api";
