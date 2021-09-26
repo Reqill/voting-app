@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 var serviceAccount = require("./permissions.json");
-
+var hash = require('object-hash');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -152,7 +152,7 @@ function AddToDb(type,req,res){
                db.collection("candidate").add(
                    {fullName:data.fullName, className:data.classNameCandidate}
                ).then((docRef)=>{
-                   db.collection("vote").add(
+                   db.collection("vote").doc(hash(req.email)).set(
                        {
                         submitDate:new Date(),
                         submitVote:docRef.id,
@@ -168,7 +168,7 @@ function AddToDb(type,req,res){
     }
     if(isValid){
         if(type!=="addCandidate"){
-            db.collection(type).add(
+            db.collection(type).doc(hash(req.email)).set(
                 verifiedData             
             ).then((docRef) =>{
                 return res.status(201).send({message:"dodano z powodzeniem"});
