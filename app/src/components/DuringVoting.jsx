@@ -89,10 +89,33 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
 
                 {
                     activeIdx === "CUSTOM" ?
-                        <div><input list="inni-kandydaci" placeholder="Własny kandydat" />
+                        <div><input list="inni-kandydaci" placeholder="Własny kandydat" required />
                             <datalist id="inni-kandydaci">
                                 <option value="Mikołaj Mrózek" />
-                            </datalist></div> : null
+                            </datalist>
+                            <select name="classLabel" id="newClassLabel" required>
+                                <option value="1a">1a</option>
+                                <option value="1b">1b</option>
+                                <option value="1c">1c</option>
+                                <option value="1d">1d</option>
+                                <option value="1e">1e</option>
+                                <option value="2a">2a</option>
+                                <option value="2b">2b</option>
+                                <option value="2c">2c</option>
+                                <option value="2d">2d</option>
+                                <option value="2e">2e</option>
+                                <option value="3ap">3ap</option>
+                                <option value="3bp">3bp</option>
+                                <option value="3cp">3cp</option>
+                                <option value="3dp">3dp</option>
+                                <option value="3ep">3ep</option>
+                                <option value="3ag">3ag</option>
+                                <option value="3bg">3bg</option>
+                                <option value="3cg">3cg</option>
+                                <option value="3dg">3dg</option>
+                                <option value="3eg">3eg</option>
+                            </select>
+                        </div> : null
                 }
                 <div className="onerow">
                     <select name="classLabel" id="classLabel" required>
