@@ -28,7 +28,7 @@ const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel
             }}
         >
             <p className="candidate-name">{name}</p>
-            <p className="candidate-class" style={{ color: colors.description }}>klasa: {classLabel}</p>
+            <p className="candidate-class" style={{ color: colors.description }}>{classLabel}</p>
         </div>
     );
 }
@@ -78,7 +78,11 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
             <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 <div className="options center">
                     {_renderOptions()}
+                    <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY" classLabel="KANDYDAT" />
                 </div>
+                {
+                    activeIdx === "CUSTOM" ? <input placeholder="własny kandydat" /> : null
+                }
                 <div className="onerow">
                     <select name="classLabel" id="classLabel" required>
                         <option value="1a">1a</option>
