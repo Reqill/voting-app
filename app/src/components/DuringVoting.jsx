@@ -78,7 +78,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
             <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 <div className="options center">
                     {_renderOptions()}
-                    <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY" classLabel="KANDYDAT" />
+                    <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY KANDYDAT" classLabel="" />
                 </div>
                 {
                     activeIdx === "CUSTOM" ? <input placeholder="własny kandydat" /> : null
