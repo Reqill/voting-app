@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
+
 import { baseApiLink } from "../commonData";
 
 
@@ -76,12 +79,20 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
     return (
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
             <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
-                <div className="options center">
-                    {_renderOptions()}
-                    <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY KANDYDAT" classLabel="" />
-                </div>
                 {
-                    activeIdx === "CUSTOM" ? <input placeholder="własny kandydat" /> : null
+                    candidates[0] === undefined ? <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div> :
+                        <div className="options center">
+                            {_renderOptions()}
+                            <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY KANDYDAT" classLabel="" />
+                        </div>
+                }
+
+                {
+                    activeIdx === "CUSTOM" ?
+                        <div><input list="inni-kandydaci" placeholder="Własny kandydat" />
+                            <datalist id="inni-kandydaci">
+                                <option value="Mikołaj Mrózek" />
+                            </datalist></div> : null
                 }
                 <div className="onerow">
                     <select name="classLabel" id="classLabel" required>
