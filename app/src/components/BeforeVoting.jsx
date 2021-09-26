@@ -54,11 +54,14 @@ const BeforeVoting = ({ colors, changeCard, setToken, endDate }) => {
                         Głosowanie otwarte!
                     </h3> */}
                     <h4 style={{ color: colors.primary }}>
-                        <span style={{ color: colors.description }}>oddano </span>{voteCount}&nbsp;<span style={{ color: colors.description }}>głosów łącznie,</span>
+                        <span style={{ color: colors.description }}>oddano </span>{voteCount}&nbsp;<span style={{ color: colors.description }}>głosów łącznie{mostVotesClass && ","}</span>
                     </h4>
-                    <h4 style={{ color: colors.primary }}>
-                        <span style={{ color: colors.description }}>a </span>{mostVotesClass || "X"}&nbsp;<span style={{ color: colors.description }}>to klasa z najwyższą frekwencją</span>
-                    </h4>
+                    {
+                        mostVotesClass && <h4 style={{ color: colors.primary }}>
+                            <span style={{ color: colors.description }}>a </span>{mostVotesClass || "X"}&nbsp;<span style={{ color: colors.description }}>to klasa z najwyższą frekwencją</span>
+                        </h4>
+                    }
+
                 </div>
                 <button
                     className="vote-btn"

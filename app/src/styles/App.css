@@ -243,7 +243,7 @@ h2 {
   -ms-grid-columns: (1fr)[3];
       grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  grid-auto-rows: minmax(100px, auto);
+  grid-auto-rows: minmax(1fr, auto);
 }
 
 @media (max-width: 620px) {
@@ -254,8 +254,7 @@ h2 {
 }
 
 .candidate-box {
-  margin-top: -10px;
-  padding: 15px;
+  padding: 10px;
   background-color: rgba(0, 0, 0, 0.05);
   border: 2px dashed rgba(0, 0, 0, 0.05);
   border-radius: 10px;
@@ -275,14 +274,14 @@ h2 {
 }
 
 .candidate-name {
-  font-size: 1em;
+  font-size: .85em;
   font-weight: 500;
   margin: 0;
   padding: 0;
 }
 
 .candidate-class {
-  font-size: .9em;
+  font-size: .7em;
   font-weight: 400;
   font-style: italic;
   margin: 0;
