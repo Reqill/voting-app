@@ -19,15 +19,20 @@ function sendListResponse(query,res,specialCase = ""){
         if(specialCase === "totalVotes"){
             let classes = [[],[]];
             let total = 0;
-            query.get().then((snapshot)=>{
+            Promise.all([query.get(),db.collection("settings").doc("1").get()]).then(([snapshot,settingsSnap])=>{
+                settings = settingsSnap.data()
                snapshot.forEach(doc=>{
-                   total++;
+                   
+                if(settings.startTime._seconds < doc.data().submitDate._seconds && doc.data().submitDate._seconds < settings.endTime._seconds){
+                    total++;
                    if(classes[0].includes(doc.data().className)){
                        classes[1][classes[0].indexOf(doc.data().className)]++;
                    }else{
                        classes[0].push(doc.data().className);
                        classes[1].push(1);
                    }
+                }
+                   
                })
                for(i=0;i<classes[0].length;i++){
                     response.push({class:classes[0][i], numberOfVotes: classes[1][i]});
@@ -46,14 +51,16 @@ function sendListResponse(query,res,specialCase = ""){
                     })
                     votesSnapshot.forEach((doc)=>{
                         let vote = doc.data();
-                        for(i = 0;i<candidates[0].length;i++){
-                            if(candidates[0][i].id === vote.submitVote){
-                                if(settings.startTime._seconds < vote.submitDate._seconds && vote.submitDate._seconds < settings.endTime._seconds){
-                                    candidates[1][i]++;
+                       
+                        if(settings.startTime._seconds < vote.submitDate._seconds && vote.submitDate._seconds < settings.endTime._seconds){
+                            for(i = 0;i<candidates[0].length;i++){
+                               
+                                if(candidates[0][i].id === vote.submitVote){
+                                    candidates[1][i]++; 
                                 }
-                                
                             }
                         }
+                      
                     })
                     if(specialCase === "specialShowing"){
                         for(i = 0;i<candidates[1].length;i++){
@@ -112,7 +119,7 @@ function sendSingleResponse(query,res){
             return res.status(200).send(temp);
         }  
         else{
-            return res.status(500).send({errorDescription: "Document you requested was not found"});
+            return res.status(500).send({errorDescription: "Dokumend nie znaleziony"});
         }
        
 })
@@ -160,7 +167,7 @@ function AddToDb(type,req,res){
                         sex:data.sex
                        }
                    ).then(() =>{
-                        return res.status(201).send({message:"dodano z powodzeniem"});
+                        return res.status(201).send({message:"Twój głos został oddany z powodzeniem"});
                    })
                })
             }
@@ -171,7 +178,7 @@ function AddToDb(type,req,res){
             db.collection(type).doc(hash(req.email)).set(
                 verifiedData             
             ).then((docRef) =>{
-                return res.status(201).send({message:"dodano z powodzeniem"});
+                return res.status(201).send({message:"Twój głos został oddany z powodzeniem"});
             })  
         }
               

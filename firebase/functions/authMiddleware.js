@@ -43,7 +43,7 @@ module.exports = validateFirebaseIdToken = function(authType){
                         return;
                     })
                 }else{
-                    res.status(403).send({errorMessage:"z tego konta oddano już głos"});
+                    res.status(403).send({errorMessage:"Możesz oddaać tylko jednen głos"});
                 }
             })
            

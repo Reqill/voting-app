@@ -37,7 +37,7 @@ const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel
 }
 
 
-const DuringVoting = ({ colors, changeCard, endDate, token }) => {
+const DuringVoting = ({ colors, changeCard, endDate, token, setMessage }) => {
     const [activeIdx, setActiveIdx] = useState(null)
     const [customCandidateId, setCustomCandidateId] = useState("");
     const [candidates, setCandidates] = useState([]);
@@ -45,6 +45,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
     const [sexVoter, setSexVoter] = useState("kobieta");
     const [classNameCandidate, setClassNameCandidate] = useState("1a");
     const [additionalCandidateName, setAdditionalCandidateName] = useState("");
+    const [waitingForServer, setWaitingForServer] = useState(false);
     useEffect(() => {
         fetch(baseApiLink + "/candidates?specialShowing=true").then(response => response.json()).then(data => {
             console.log(data);
@@ -63,9 +64,10 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
     }, [additionalCandidateName])
     const _handleSubmit = (e) => {
         e.preventDefault()
+        setWaitingForServer(true);
         let path = "";
         let dataToSend = {};
-        if(customCandidateId ===""){
+        if(customCandidateId ==="" && activeIdx==="CUSTOM"){
             path = "/addCandidate";
             dataToSend = {
                 fullName: additionalCandidateName,
@@ -92,10 +94,15 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
                 body: JSON.stringify(dataToSend)
             }).then(response => response.json()).then(data => {
                 if(data.errorMessage === undefined){
-                    console.log(data.message);
-                    changeCard("after-voting");
+                    setMessage(data.message)
+                    
+                    
                 }
-                else{console.log(data.errorMessage)}
+                else{
+                    setMessage(data.errorMessage)
+                }
+                setWaitingForServer(false);
+                changeCard("after-voting");
             })
     }
 
@@ -103,7 +110,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
         return candidates.filter(candidate=> candidate.reachedTreshold===true).map((candidate) => <VoteOption colors={colors} idx={candidate.id} activeIdx={activeIdx} setActiveIdx={setActiveIdx} name={candidate.fullName} classLabel={candidate.className} />)
     }
     const _renderAdditionalOptions = () => {
-        return candidates.filter(candidate=> candidate.reachedTreshold===false).map((candidate) => <option value={candidate.fullName} />)
+        return candidates.filter(candidate=> candidate.reachedTreshold===false).map((candidate) => <option value={candidate.fullName} key={candidate.fullName}/>)
     }
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -129,7 +136,12 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
 
     return (
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
-            <form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
+            {waitingForServer?(
+                <>
+                    <p>Twój głos jest przesyłany na serwer</p>
+                    <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div>
+                </>
+            ):(<form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 {
                     candidates[0] === undefined ? <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div> :
                         <div className="options center">
@@ -206,7 +218,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
                 >
                     <p className="btn-label">Oddaj głos!</p>
                 </button>
-            </form>
+            </form>)}
             <p className="countdown-label" style={{ color: colors.header }}>Do zakończenia głosowania pozostało:</p>
             <Countdown
                 date={endDate}

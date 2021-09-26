@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 
-const AfterVoting = ({ colors, changeCard, endDate }) => {
+const AfterVoting = ({ colors, changeCard, endDate, message }) => {
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
-            changeCard("after-voting");
+            changeCard("after-time");
             return <span>Zakończono głosowanie!</span>;
         } else {
             return (
@@ -25,6 +25,7 @@ const AfterVoting = ({ colors, changeCard, endDate }) => {
 
     return (
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
+            <p>{message}</p>
             <p className="countdown-label" style={{ color: colors.header }}>Do zakończenia głosowania pozostało:</p>
             <Countdown
                 date={endDate}

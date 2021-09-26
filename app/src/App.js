@@ -25,6 +25,7 @@ const App = () => {
   const [token, setToken] = useState();
   const [settings, setSettings] = useState({ startTime: { _seconds: 16325877560 }, endTime: { _seconds: 163258775600 } });
   const [loaded, setLoaded] = useState(false)
+  const [message, setMessage] = useState("");
   useEffect(() => {
 
     console.log("DOWNLOADING");
@@ -54,9 +55,9 @@ const App = () => {
                 currentCard === "before-voting" ?
                   <BeforeVoting colors={colors} changeCard={setCurrentCard} setToken={setToken} endDate={settings.endTime._seconds * 1000} /> :
                   currentCard === "during-voting" ?
-                    <DuringVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} token={token} /> :
+                    <DuringVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} token={token} setMessage={setMessage} /> :
                     currentCard === "after-voting" ?
-                      <AfterVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} /> :
+                      <AfterVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} message={message}/> :
                       currentCard === "after-time" ?
                         <AfterTime colors={colors} /> :
                         <p>WTF</p>
