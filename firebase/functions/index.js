@@ -57,7 +57,7 @@ function sendListResponse(query,res,specialCase = ""){
                     })
                     if(specialCase === "specialShowing"){
                         for(i = 0;i<candidates[1].length;i++){
-                            if(candidates[1][i]  >= settings.showNumber){
+                            if(candidates[1][i]  >= settings.showNumber||candidates[0][i].allwaysOn  === true){
                                 response.push({...candidates[0][i],reachedTreshold:true});
                             }
                             else{
@@ -156,7 +156,7 @@ function AddToDb(type,req,res){
                        {
                         submitDate:new Date(),
                         submitVote:docRef.id,
-                        cassName:data.classNameVoter,
+                        className:data.classNameVoter,
                         sex:data.sex
                        }
                    ).then(() =>{

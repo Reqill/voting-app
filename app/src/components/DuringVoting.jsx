@@ -39,40 +39,71 @@ const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel
 
 const DuringVoting = ({ colors, changeCard, endDate, token }) => {
     const [activeIdx, setActiveIdx] = useState(null)
+    const [customCandidateId, setCustomCandidateId] = useState("");
     const [candidates, setCandidates] = useState([]);
     const [classNameVoter, setClassNameVoter] = useState("1a");
     const [sexVoter, setSexVoter] = useState("kobieta");
+    const [classNameCandidate, setClassNameCandidate] = useState("1a");
+    const [additionalCandidateName, setAdditionalCandidateName] = useState("");
     useEffect(() => {
-        fetch(baseApiLink + "/candidates").then(response => response.json()).then(data => {
+        fetch(baseApiLink + "/candidates?specialShowing=true").then(response => response.json()).then(data => {
+            console.log(data);
             setCandidates(data);
         })
     }, [])
+    useEffect(() => {
+
+        let cand = candidates.filter(candidate=>candidate.fullName===additionalCandidateName);
+        if(cand !== undefined){
+            if(cand[0] !== undefined){
+                setCustomCandidateId(cand[0].id)
+                setClassNameCandidate(cand[0].className);
+            }
+        }
+    }, [additionalCandidateName])
     const _handleSubmit = (e) => {
         e.preventDefault()
-        let dataToSend = {
-            className: classNameVoter,
-            sex: sexVoter,
-            submitVote: activeIdx
-        };
+        let path = "";
+        let dataToSend = {};
+        if(customCandidateId ===""){
+            path = "/addCandidate";
+            dataToSend = {
+                fullName: additionalCandidateName,
+                classNameCandidate: classNameCandidate,
+                classNameVoter: classNameVoter,
+                sex: sexVoter
+            };
+            
+        }else{
+            path = "/vote";
+            dataToSend = {
+                className: classNameVoter,
+                sex: sexVoter,
+                submitVote: activeIdx==="CUSTOM"?customCandidateId:activeIdx
+            };
+        }
         console.log(dataToSend);
-        fetch(baseApiLink + "/vote", {
-            method: "post",
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            }),
-            body: JSON.stringify(dataToSend)
-        }).then(response => response.json()).then(data => {
-            if(data.errorMessage === undefined){
-                console.log(data.message);
-                changeCard("after-voting");
-            }
-            else{console.log(data.errorMessage)}
-        })
+            fetch(baseApiLink + path, {
+                method: "post",
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }),
+                body: JSON.stringify(dataToSend)
+            }).then(response => response.json()).then(data => {
+                if(data.errorMessage === undefined){
+                    console.log(data.message);
+                    changeCard("after-voting");
+                }
+                else{console.log(data.errorMessage)}
+            })
     }
 
     const _renderOptions = () => {
-        return candidates.map((candidate) => <VoteOption colors={colors} idx={candidate.id} activeIdx={activeIdx} setActiveIdx={setActiveIdx} name={candidate.fullName} classLabel={candidate.className} />)
+        return candidates.filter(candidate=> candidate.reachedTreshold===true).map((candidate) => <VoteOption colors={colors} idx={candidate.id} activeIdx={activeIdx} setActiveIdx={setActiveIdx} name={candidate.fullName} classLabel={candidate.className} />)
+    }
+    const _renderAdditionalOptions = () => {
+        return candidates.filter(candidate=> candidate.reachedTreshold===false).map((candidate) => <option value={candidate.fullName} />)
     }
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -109,11 +140,11 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
 
                 {
                     activeIdx === "CUSTOM" ?
-                        <div><input list="inni-kandydaci" placeholder="Własny kandydat" required />
-                            <datalist id="inni-kandydaci">
-                                <option value="Mikołaj Mrózek" />
+                        <div><input list="inni-kandydaci" onChange={(e)=>{setAdditionalCandidateName(e.target.value)}} placeholder="Własny kandydat" required />
+                            <datalist id="inni-kandydaci" >
+                                {_renderAdditionalOptions()}
                             </datalist>
-                            <select name="classLabel" id="newClassLabel" required>
+                            <select name="classLabel" id="newClassLabel" value={classNameCandidate} onChange={(e)=>{setClassNameCandidate(e.target.value)}} required>
                                 <option value="1a">1a</option>
                                 <option value="1b">1b</option>
                                 <option value="1c">1c</option>
