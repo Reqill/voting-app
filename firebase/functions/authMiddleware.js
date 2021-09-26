@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client();
+
 module.exports = validateFirebaseIdToken = function(authType){
    return (async (req, res, next) => {
    
@@ -37,6 +38,7 @@ module.exports = validateFirebaseIdToken = function(authType){
                     db.collection("usedAccounts").doc(userid).set({
                         used: true
                     }).then(()=>{
+                        req.email = payload.email;
                         next();
                         return;
                     })

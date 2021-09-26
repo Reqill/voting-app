@@ -40,15 +40,35 @@ const VoteOption = ({ colors, idx, activeIdx, setActiveIdx, id, name, classLabel
 const DuringVoting = ({ colors, changeCard, endDate, token }) => {
     const [activeIdx, setActiveIdx] = useState(null)
     const [candidates, setCandidates] = useState([]);
+    const [classNameVoter, setClassNameVoter] = useState("1a");
+    const [sexVoter, setSexVoter] = useState("kobieta");
     useEffect(() => {
         fetch(baseApiLink + "/candidates").then(response => response.json()).then(data => {
             setCandidates(data);
         })
     }, [])
-
     const _handleSubmit = (e) => {
         e.preventDefault()
-        console.log(token);
+        let dataToSend = {
+            className: classNameVoter,
+            sex: sexVoter,
+            submitVote: activeIdx
+        };
+        console.log(dataToSend);
+        fetch(baseApiLink + "/vote", {
+            method: "post",
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }),
+            body: JSON.stringify(dataToSend)
+        }).then(response => response.json()).then(data => {
+            if(data.errorMessage === undefined){
+                console.log(data.message);
+                changeCard("after-voting");
+            }
+            else{console.log(data.errorMessage)}
+        })
     }
 
     const _renderOptions = () => {
@@ -118,7 +138,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
                         </div> : null
                 }
                 <div className="onerow">
-                    <select name="classLabel" id="classLabel" required>
+                    <select name="classLabel"  onChange={(e)=>setClassNameVoter(e.target.value)} id="classLabel" required>
                         <option value="1a">1a</option>
                         <option value="1b">1b</option>
                         <option value="1c">1c</option>
@@ -140,7 +160,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token }) => {
                         <option value="3dg">3dg</option>
                         <option value="3eg">3eg</option>
                     </select>
-                    <select name="sex" id="sex" required>
+                    <select name="sex" id="sex"  onChange={(e)=>setSexVoter(e.target.value)} required>
                         <option value="kobieta">kobieta</option>
                         <option value="mezczyzna">mężczyzna</option>
                         <option value="nie-podawac">nie chcę podawać</option>
