@@ -3,15 +3,15 @@ import Countdown from "react-countdown";
 import "../styles/App.css"
 import signInWithGoogle from "../firebase";
 import { baseApiLink } from "../commonData";
-const BeforeVoting = ({ colors, changeCard,setToken,endDate }) => {
-    const [voteCount,setVoteCount] = useState(0);
-    const [mostVotesClass,setMostVotesClass] = useState("");
-    useEffect(()=>{
-        fetch(baseApiLink+"/votes/count").then(response=>response.json()).then(data=>{
+const BeforeVoting = ({ colors, changeCard, setToken, endDate }) => {
+    const [voteCount, setVoteCount] = useState(0);
+    const [mostVotesClass, setMostVotesClass] = useState("");
+    useEffect(() => {
+        fetch(baseApiLink + "/votes/count").then(response => response.json()).then(data => {
             setVoteCount(data.total);
-            setMostVotesClass(data.classes.sort((a,b)=>b.numberOfVotes - a.numberOfVotes)[0]?.class)
-          })
-    },[])
+            setMostVotesClass(data.classes.sort((a, b) => b.numberOfVotes - a.numberOfVotes)[0]?.class)
+        })
+    }, [])
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
             changeCard("after-voting");
@@ -31,15 +31,16 @@ const BeforeVoting = ({ colors, changeCard,setToken,endDate }) => {
             );
         }
     };
-    const callback = (credentials,user) => {
-        if(user.email.endsWith("@lo1.gliwice.pl")){
+    const callback = (credentials, user) => {
+        if (user.email.endsWith("@lo1.gliwice.pl")) {
             setToken(credentials.idToken);
             changeCard("during-voting");
         }
-        else{
-            console.log("to nie email szkolny");
+        else {
+            // console.log("to nie email szkolny");
+            alert("Musisz zalogować się z maila szkolnego! Domena: *@lo1.gliwice.pl")
         }
-       
+
     }
     const _handleLogIn = () => {
         signInWithGoogle(callback);
@@ -56,7 +57,7 @@ const BeforeVoting = ({ colors, changeCard,setToken,endDate }) => {
                         <span style={{ color: colors.description }}>oddano </span>{voteCount}&nbsp;<span style={{ color: colors.description }}>głosów łącznie,</span>
                     </h4>
                     <h4 style={{ color: colors.primary }}>
-                        <span style={{ color: colors.description }}>a </span>{mostVotesClass}&nbsp;<span style={{ color: colors.description }}>to klasa z najwyższą frekwencją</span>
+                        <span style={{ color: colors.description }}>a </span>{mostVotesClass || "X"}&nbsp;<span style={{ color: colors.description }}>to klasa z najwyższą frekwencją</span>
                     </h4>
                 </div>
                 <button
