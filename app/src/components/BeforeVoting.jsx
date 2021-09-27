@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
 import "../styles/App.css"
-import signInWithGoogle from "../firebase";
+import {signInWithGoogle} from "../firebase";
 import { baseApiLink } from "../commonData";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
-const BeforeVoting = ({ colors, changeCard, setToken, endDate, setMessage }) => {
+const BeforeVoting = ({ colors, changeCard, endDate }) => {
     const [voteCount, setVoteCount] = useState(0);
     const [mostVotesClass, setMostVotesClass] = useState("");
     const [waitingForServer,setWaitingForServer] = useState(false);
@@ -34,36 +34,9 @@ const BeforeVoting = ({ colors, changeCard, setToken, endDate, setMessage }) => 
             );
         }
     };
-    const callback = (credentials, user) => {
-        if (user.email.endsWith("@lo1.gliwice.pl")) {
-            setWaitingForServer(true);
-            fetch(baseApiLink + "/ableToVote",{
-                method: "get",
-                headers: new Headers({
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + credentials.idToken
-                })}).then(response =>{
-                if(response.status === 200){
-                    setWaitingForServer(false);
-                    setToken(credentials.idToken);
-                    changeCard("during-voting");
-                }else{
-                    setWaitingForServer(false);
-                    setMessage("Możesz oddać tylko jeden głos!");
-                    changeCard("after-voting");
-                }
-               
-            })
-            
-        }
-        else {
-            // console.log("to nie email szkolny");
-            alert("Musisz zalogować się z maila szkolnego! Domena: *@lo1.gliwice.pl")
-        }
-
-    }
+   
     const _handleLogIn = () => {
-        signInWithGoogle(callback);
+        signInWithGoogle();
     }
 
     return (

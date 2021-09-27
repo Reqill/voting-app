@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import Countdown from "react-countdown";
-
-const AfterVoting = ({ colors, changeCard, endDate, message }) => {
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
+const AfterVoting = ({ colors, changeCard, endDate, message, waitingForServer }) => {
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
@@ -27,9 +28,10 @@ const AfterVoting = ({ colors, changeCard, endDate, message }) => {
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
 
             <div className="dummy center" style={{ height: "120px" }}>
-                <p>
+                {waitingForServer?<Loader type="Bars" color={colors.primary} height={40} width={40} />: <p>
                     {message}
-                </p>
+                </p>}
+               
             </div>
             <p className="countdown-label" style={{ color: colors.header }}>Do zakończenia głosowania pozostało:</p>
             <Countdown
