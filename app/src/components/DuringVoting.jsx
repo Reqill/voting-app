@@ -54,9 +54,9 @@ const DuringVoting = ({ colors, changeCard, endDate, token, setMessage }) => {
     }, [])
     useEffect(() => {
 
-        let cand = candidates.filter(candidate=>candidate.fullName===additionalCandidateName);
-        if(cand !== undefined){
-            if(cand[0] !== undefined){
+        let cand = candidates.filter(candidate => candidate.fullName === additionalCandidateName);
+        if (cand !== undefined) {
+            if (cand[0] !== undefined) {
                 setCustomCandidateId(cand[0].id)
                 setClassNameCandidate(cand[0].className);
             }
@@ -67,7 +67,7 @@ const DuringVoting = ({ colors, changeCard, endDate, token, setMessage }) => {
         setWaitingForServer(true);
         let path = "";
         let dataToSend = {};
-        if(customCandidateId ==="" && activeIdx==="CUSTOM"){
+        if (customCandidateId === "" && activeIdx === "CUSTOM") {
             path = "/addCandidate";
             dataToSend = {
                 fullName: additionalCandidateName,
@@ -75,42 +75,42 @@ const DuringVoting = ({ colors, changeCard, endDate, token, setMessage }) => {
                 classNameVoter: classNameVoter,
                 sex: sexVoter
             };
-            
-        }else{
+
+        } else {
             path = "/vote";
             dataToSend = {
                 className: classNameVoter,
                 sex: sexVoter,
-                submitVote: activeIdx==="CUSTOM"?customCandidateId:activeIdx
+                submitVote: activeIdx === "CUSTOM" ? customCandidateId : activeIdx
             };
         }
         console.log(dataToSend);
-            fetch(baseApiLink + path, {
-                method: "post",
-                headers: new Headers({
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }),
-                body: JSON.stringify(dataToSend)
-            }).then(response => response.json()).then(data => {
-                if(data.errorMessage === undefined){
-                    setMessage(data.message)
-                    
-                    
-                }
-                else{
-                    setMessage(data.errorMessage)
-                }
-                setWaitingForServer(false);
-                changeCard("after-voting");
-            })
+        fetch(baseApiLink + path, {
+            method: "post",
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }),
+            body: JSON.stringify(dataToSend)
+        }).then(response => response.json()).then(data => {
+            if (data.errorMessage === undefined) {
+                setMessage(data.message)
+
+
+            }
+            else {
+                setMessage(data.errorMessage)
+            }
+            setWaitingForServer(false);
+            changeCard("after-voting");
+        })
     }
 
     const _renderOptions = () => {
-        return candidates.filter(candidate=> candidate.reachedTreshold===true).map((candidate) => <VoteOption colors={colors} idx={candidate.id} activeIdx={activeIdx} setActiveIdx={setActiveIdx} name={candidate.fullName} classLabel={candidate.className} />)
+        return candidates.filter(candidate => candidate.reachedTreshold === true).map((candidate) => <VoteOption colors={colors} idx={candidate.id} activeIdx={activeIdx} setActiveIdx={setActiveIdx} name={candidate.fullName} classLabel={candidate.className} />)
     }
     const _renderAdditionalOptions = () => {
-        return candidates.filter(candidate=> candidate.reachedTreshold===false).map((candidate) => <option value={candidate.fullName} key={candidate.fullName}/>)
+        return candidates.filter(candidate => candidate.reachedTreshold === false).map((candidate) => <option value={candidate.fullName} key={candidate.fullName} />)
     }
 
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -136,79 +136,116 @@ const DuringVoting = ({ colors, changeCard, endDate, token, setMessage }) => {
 
     return (
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
-            {waitingForServer?(
+            {waitingForServer ? (
                 <>
                     <p>Twój głos jest przesyłany na serwer</p>
                     <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div>
                 </>
-            ):(<form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
+            ) : (<form onSubmit={_handleSubmit} className="center" style={{ width: "100%" }}>
                 {
                     candidates[0] === undefined ? <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div> :
+
                         <div className="options center">
                             {_renderOptions()}
-                            <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY KANDYDAT" classLabel="" />
+                            <VoteOption colors={colors} idx="CUSTOM" activeIdx={activeIdx} setActiveIdx={setActiveIdx} name="WŁASNY" classLabel="KANDYDAT" />
                         </div>
+
+
                 }
 
                 {
                     activeIdx === "CUSTOM" ?
-                        <div><input list="inni-kandydaci" onChange={(e)=>{setAdditionalCandidateName(e.target.value)}} placeholder="Własny kandydat" required />
-                            <datalist id="inni-kandydaci" >
-                                {_renderAdditionalOptions()}
-                            </datalist>
-                            <select name="classLabel" id="newClassLabel" value={classNameCandidate} onChange={(e)=>{setClassNameCandidate(e.target.value)}} required>
-                                <option value="1a">1a</option>
-                                <option value="1b">1b</option>
-                                <option value="1c">1c</option>
-                                <option value="1d">1d</option>
-                                <option value="1e">1e</option>
-                                <option value="2a">2a</option>
-                                <option value="2b">2b</option>
-                                <option value="2c">2c</option>
-                                <option value="2d">2d</option>
-                                <option value="2e">2e</option>
-                                <option value="3ap">3ap</option>
-                                <option value="3bp">3bp</option>
-                                <option value="3cp">3cp</option>
-                                <option value="3dp">3dp</option>
-                                <option value="3ep">3ep</option>
-                                <option value="3ag">3ag</option>
-                                <option value="3bg">3bg</option>
-                                <option value="3cg">3cg</option>
-                                <option value="3dg">3dg</option>
-                                <option value="3eg">3eg</option>
-                            </select>
-                        </div> : null
+
+                        <div className="center" style={{ width: "100%", marginTop: "5px" }}>
+                            <p style={{ color: colors.header }} className="additionalinfo">— Informacje o kandydacie —</p>
+                            <div className="onerow" style={{ width: "94%" }}>
+
+                                <div className="input-box" style={{ width: "100%", minWidth: "100px" }}>
+                                    <p style={{ color: colors.description }}>
+                                        Imię i nazwisko:
+                                    </p>
+                                    <input className="def" list="inni-kandydaci" style={{ color: colors.header }} onChange={(e) => { setAdditionalCandidateName(e.target.value) }} required />
+                                    <datalist id="inni-kandydaci" style={{ color: colors.header }}  >
+                                        {_renderAdditionalOptions()}
+                                    </datalist>
+                                </div>
+
+                                <div className="input-box">
+                                    <p style={{ color: colors.description }}>
+                                        Klasa:
+                                    </p>
+                                    <select name="classLabel" id="newClassLabel" style={{ color: colors.header }} className="def" value={classNameCandidate} onChange={(e) => { setClassNameCandidate(e.target.value) }} required>
+                                        <option className="def" value="1a">1a</option>
+                                        <option className="def" value="1b">1b</option>
+                                        <option className="def" value="1c">1c</option>
+                                        <option className="def" value="1d">1d</option>
+                                        <option className="def" value="1e">1e</option>
+                                        <option className="def" value="2a">2a</option>
+                                        <option className="def" value="2b">2b</option>
+                                        <option className="def" value="2c">2c</option>
+                                        <option className="def" value="2d">2d</option>
+                                        <option className="def" value="2e">2e</option>
+                                        <option className="def" value="3ap">3ap</option>
+                                        <option className="def" value="3bp">3bp</option>
+                                        <option className="def" value="3cp">3cp</option>
+                                        <option className="def" value="3dp">3dp</option>
+                                        <option className="def" value="3ep">3ep</option>
+                                        <option className="def" value="3ag">3ag</option>
+                                        <option className="def" value="3bg">3bg</option>
+                                        <option className="def" value="3cg">3cg</option>
+                                        <option className="def" value="3dg">3dg</option>
+                                        <option className="def" value="3eg">3eg</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                        : null
                 }
-                <div className="onerow">
-                    <select name="classLabel"  onChange={(e)=>setClassNameVoter(e.target.value)} id="classLabel" required>
-                        <option value="1a">1a</option>
-                        <option value="1b">1b</option>
-                        <option value="1c">1c</option>
-                        <option value="1d">1d</option>
-                        <option value="1e">1e</option>
-                        <option value="2a">2a</option>
-                        <option value="2b">2b</option>
-                        <option value="2c">2c</option>
-                        <option value="2d">2d</option>
-                        <option value="2e">2e</option>
-                        <option value="3ap">3ap</option>
-                        <option value="3bp">3bp</option>
-                        <option value="3cp">3cp</option>
-                        <option value="3dp">3dp</option>
-                        <option value="3ep">3ep</option>
-                        <option value="3ag">3ag</option>
-                        <option value="3bg">3bg</option>
-                        <option value="3cg">3cg</option>
-                        <option value="3dg">3dg</option>
-                        <option value="3eg">3eg</option>
-                    </select>
-                    <select name="sex" id="sex"  onChange={(e)=>setSexVoter(e.target.value)} required>
-                        <option value="kobieta">kobieta</option>
-                        <option value="mezczyzna">mężczyzna</option>
-                        <option value="nie-podawac">nie chcę podawać</option>
-                        <option value="inne">inne</option>
-                    </select>
+                <div className="center" style={{ marginTop: "5px" }}>
+
+                    <p style={{ color: colors.header }} className="additionalinfo">— Informacje o głosującym —</p>
+
+                    <div className="onerow">
+                        <div className="input-box">
+                            <p style={{ color: colors.description }}>
+                                Klasa:
+                            </p>
+                            <select name="classLabel" className="def" style={{ color: colors.header }} onChange={(e) => setClassNameVoter(e.target.value)} id="classLabel" required>
+                                <option className="def" value="1a">1a</option>
+                                <option className="def" value="1b">1b</option>
+                                <option className="def" value="1c">1c</option>
+                                <option className="def" value="1d">1d</option>
+                                <option className="def" value="1e">1e</option>
+                                <option className="def" value="2a">2a</option>
+                                <option className="def" value="2b">2b</option>
+                                <option className="def" value="2c">2c</option>
+                                <option className="def" value="2d">2d</option>
+                                <option className="def" value="2e">2e</option>
+                                <option className="def" value="3ap">3ap</option>
+                                <option className="def" value="3bp">3bp</option>
+                                <option className="def" value="3cp">3cp</option>
+                                <option className="def" value="3dp">3dp</option>
+                                <option className="def" value="3ep">3ep</option>
+                                <option className="def" value="3ag">3ag</option>
+                                <option className="def" value="3bg">3bg</option>
+                                <option className="def" value="3cg">3cg</option>
+                                <option className="def" value="3dg">3dg</option>
+                                <option className="def" value="3eg">3eg</option>
+                            </select>
+                        </div>
+                        <div className="input-box">
+                            <p style={{ color: colors.description }}>
+                                Płeć:
+                            </p>
+                            <select name="sex" id="sex" className="def" style={{ color: colors.header }} onChange={(e) => setSexVoter(e.target.value)} required>
+                                <option className="def" value="kobieta">kobieta</option>
+                                <option className="def" value="mezczyzna">mężczyzna</option>
+                                <option className="def" value="nie-podawac">nie chcę podawać</option>
+                                <option className="def" value="inne">inne</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <button
                     className="vote-btn"
