@@ -38,45 +38,46 @@ const App = () => {
       }
 
     })
-    
+
     setWaitingForServer(true);
     getResults(callback);
   }, [])
   const callback = (credentials, user) => {
-    if(credentials !==undefined && user !== undefined){
+    if (credentials !== undefined && user !== undefined) {
       if (user.email.endsWith("@lo1.gliwice.pl")) {
-        
-        fetch(baseApiLink + "/ableToVote",{
-            method: "get",
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + credentials.idToken
-            })}).then(response =>{
-            if(response.status === 200){
-                setCurrentCard("during-voting");
-                setWaitingForServer(false);
-                setToken(credentials.idToken);
-                
-            }else{
-                setCurrentCard("after-voting");
-                setWaitingForServer(false);
-                setMessage("Możesz oddać tylko jeden głos!");
-                
-            }
-           
+
+        fetch(baseApiLink + "/ableToVote", {
+          method: "get",
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + credentials.idToken
+          })
+        }).then(response => {
+          if (response.status === 200) {
+            setCurrentCard("during-voting");
+            setWaitingForServer(false);
+            setToken(credentials.idToken);
+
+          } else {
+            setCurrentCard("after-voting");
+            setWaitingForServer(false);
+            setMessage("Możesz oddać tylko jeden głos!");
+
+          }
+
         })
-        
-     }
+
+      }
       else {
-          setWaitingForServer(false);
-          // console.log("to nie email szkolny");
-          alert("Musisz zalogować się z maila szkolnego! Domena: *@lo1.gliwice.pl")
+        setWaitingForServer(false);
+        // console.log("to nie email szkolny");
+        alert("Musisz zalogować się z maila szkolnego! Domena: *@lo1.gliwice.pl")
       }
     }
     setWaitingForServer(false);
-    
 
-}
+
+  }
   return (
     <div style={{ backgroundColor: colors.bgPage }} className="background">
       <main style={{ backgroundColor: colors.bgCard }}>
@@ -89,15 +90,15 @@ const App = () => {
             I Liceum Ogółnokształcące w Gliwicach
           </h2>
           {
-            !loaded || waitingForServer? <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div> :
+            !loaded || waitingForServer ? <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div> :
               currentCard === "before-time" ?
                 <BeforeTime colors={colors} changeCard={setCurrentCard} endDate={settings.startTime._seconds * 1000} /> :
                 currentCard === "before-voting" ?
-                  <BeforeVoting colors={colors} changeCard={setCurrentCard}endDate={settings.endTime._seconds * 1000} /> :
+                  <BeforeVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} /> :
                   currentCard === "during-voting" ?
                     <DuringVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} token={token} setMessage={setMessage} /> :
                     currentCard === "after-voting" ?
-                      <AfterVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} message={message}/> :
+                      <AfterVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} message={message} /> :
                       currentCard === "after-time" ?
                         <AfterTime colors={colors} /> :
                         <p>WTF</p>
