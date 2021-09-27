@@ -152,7 +152,6 @@ const DuringVoting = ({ colors, changeCard, endDate, token, setMessage }) => {
 
 
                 }
-
                 {
                     activeIdx === "CUSTOM" ?
 
