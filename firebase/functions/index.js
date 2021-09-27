@@ -167,7 +167,7 @@ function AddToDb(type,req,res){
                         sex:data.sex
                        }
                    ).then(() =>{
-                        return res.status(201).send({message:"Twój głos został oddany z powodzeniem"});
+                        return res.status(201).send({message:"Twój głos został oddany z powodzeniem!"});
                    })
                })
             }
@@ -178,7 +178,7 @@ function AddToDb(type,req,res){
             db.collection(type).doc(hash(req.email)).set(
                 verifiedData             
             ).then((docRef) =>{
-                return res.status(201).send({message:"Twój głos został oddany z powodzeniem"});
+                return res.status(201).send({message:"Twój głos został oddany z powodzeniem!"});
             })  
         }
               
@@ -240,6 +240,9 @@ app.get('/api/settings',(req,res) => {
     catch(error){
         return res.status(500).send({errorDescription: error});
     }   
+});
+app.get('/api/ableToVote',authMiddleware("ableToVote"),(req,res) => {      
+    return res.status(500).send({errorDescription: "you should have seen this ups"});
 });
 //Export the api to Firebase 
 exports.app = functions.region('europe-west1').https.onRequest(app);

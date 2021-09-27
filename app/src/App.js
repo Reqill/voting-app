@@ -53,7 +53,7 @@ const App = () => {
               currentCard === "before-time" ?
                 <BeforeTime colors={colors} changeCard={setCurrentCard} endDate={settings.startTime._seconds * 1000} /> :
                 currentCard === "before-voting" ?
-                  <BeforeVoting colors={colors} changeCard={setCurrentCard} setToken={setToken} endDate={settings.endTime._seconds * 1000} /> :
+                  <BeforeVoting colors={colors} changeCard={setCurrentCard} setToken={setToken} endDate={settings.endTime._seconds * 1000} setMessage={setMessage} /> :
                   currentCard === "during-voting" ?
                     <DuringVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} token={token} setMessage={setMessage} /> :
                     currentCard === "after-voting" ?

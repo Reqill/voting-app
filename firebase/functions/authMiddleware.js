@@ -31,20 +31,29 @@ module.exports = validateFirebaseIdToken = function(authType){
     });
     const payload = ticket.getPayload();
     const userid = payload['sub'];
-    if(authType === "vote"){
+    if(authType === "vote"|| authType ==="ableToVote"){
         if(payload.hd === "lo1.gliwice.pl"){
             db.collection("usedAccounts").doc(userid).get().then(doc=>{
+              if(authType==="vote"){
                 if(doc.data() === undefined){
-                    db.collection("usedAccounts").doc(userid).set({
-                        used: true
-                    }).then(()=>{
-                        req.email = payload.email;
-                        next();
-                        return;
-                    })
+                  db.collection("usedAccounts").doc(userid).set({
+                      used: true
+                  }).then(()=>{
+                      req.email = payload.email;
+                      next();
+                      return;
+                  })
                 }else{
-                    res.status(403).send({errorMessage:"Możesz oddaać tylko jednen głos"});
+                    res.status(403).send({errorMessage:"Możesz oddaać tylko jednen głos!"});
                 }
+              }else if(authType === "ableToVote"){
+                if(doc.data() !== undefined){
+                  res.status(403).send({errorMessage:"Możesz oddaać tylko jednen głos!"});
+                }else{
+                  res.status(200).send({message:"Możesz oddaać głos!"});
+                }
+              }
+               
             })
            
         }else{
