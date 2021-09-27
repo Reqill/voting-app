@@ -325,4 +325,9 @@ h2 {
   padding: 0;
   margin-bottom: 10px;
 }
+
+.someAdamsMessage {
+  font-size: 1.25em;
+  font-weight: 600;
+}
 /*# sourceMappingURL=App.css.map */
