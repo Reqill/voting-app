@@ -25,7 +25,12 @@ const AfterVoting = ({ colors, changeCard, endDate, message }) => {
 
     return (
         <div className="center" style={{ width: "100%", maxWidth: "100%", marginBottom: "5px" }}>
-            <p>{message}</p>
+
+            <div className="dummy center" style={{ height: "120px" }}>
+                <p>
+                    {message}
+                </p>
+            </div>
             <p className="countdown-label" style={{ color: colors.header }}>Do zakończenia głosowania pozostało:</p>
             <Countdown
                 date={endDate}
