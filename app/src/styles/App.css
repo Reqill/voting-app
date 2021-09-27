@@ -287,4 +287,42 @@ h2 {
   margin: 0;
   padding: 0;
 }
+
+.def {
+  background-color: transparent;
+  font-size: inherit;
+  color: inherit;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  font-family: "Montserrat";
+  margin-left: -2px;
+}
+
+.input-box {
+  font-size: 1em;
+  padding: 8px 10px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 2px dashed rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin: 0 5px;
+}
+
+.input-box p {
+  font-size: .6em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
+.additionalinfo {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 5px;
+  padding: 0;
+  margin-bottom: 10px;
+}
 /*# sourceMappingURL=App.css.map */
