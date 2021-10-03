@@ -42,7 +42,7 @@ const App = () => {
     setWaitingForServer(true);
     getResults(callback);
   }, [])
-  
+
   const callback = (credentials, user) => {
     if (credentials !== undefined && user !== undefined) {
       if (user.email.endsWith("@lo1.gliwice.pl")) {
@@ -65,19 +65,17 @@ const App = () => {
             setMessage("Możesz oddać tylko jeden głos!");
 
           }
-
         })
-
       }
       else {
         setWaitingForServer(false);
         // console.log("to nie email szkolny");
         alert("Musisz zalogować się z maila szkolnego! Domena: *@lo1.gliwice.pl")
       }
-    }else{
+    } else {
       setWaitingForServer(false);
     }
-   
+
 
 
   }
@@ -93,7 +91,7 @@ const App = () => {
             I Liceum Ogółnokształcące w Gliwicach
           </h2>
           {
-            loaded && !waitingForServer ? 
+            loaded && !waitingForServer ?
               currentCard === "before-time" ?
                 <BeforeTime colors={colors} changeCard={setCurrentCard} endDate={settings.startTime._seconds * 1000} /> :
                 currentCard === "before-voting" ?
@@ -104,8 +102,8 @@ const App = () => {
                       <AfterVoting colors={colors} changeCard={setCurrentCard} endDate={settings.endTime._seconds * 1000} message={message} /> :
                       currentCard === "after-time" ?
                         <AfterTime colors={colors} /> :
-                        <p>WTF</p>:
-            <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div>
+                        <p>WTF</p> :
+              <div style={{ margin: "40px" }}><Loader type="Bars" color={colors.primary} height={40} width={40} /></div>
           }
           <p className="signed" style={{ color: colors.description }}>{'By: Maciuga Adam & Mrózek Mikołaj'}</p>
         </div>
