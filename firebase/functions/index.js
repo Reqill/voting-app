@@ -3,8 +3,7 @@ const admin = require("firebase-admin");
 var serviceAccount = require("./permissions.json");
 var hash = require('object-hash');
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "localhost:8000"
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const express = require("express");
