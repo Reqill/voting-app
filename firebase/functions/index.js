@@ -3,7 +3,8 @@ const admin = require("firebase-admin");
 var serviceAccount = require("./permissions.json");
 var hash = require('object-hash');
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "localhost:8000"
 });
 
 const express = require("express");
@@ -16,7 +17,105 @@ app.use( cors());
 function sendListResponse(query,res,specialCase = ""){
     let response = [];
     if(specialCase!==""){
-        if(specialCase === "totalVotes"){
+        if(specialCase === "stats"){
+            Promise.all([db.collection("candidate").get(),query.get(),db.collection("settings").doc("1").get()]).then(([candidatesSnapshot,votesSnapshot,settingsSnapshot])=>{
+                settings = settingsSnapshot.data()
+                if(settings.showResoults && settings.endTime._seconds < new Date().getTime()/1000){
+                    
+                  
+                    let candidates = [[],[]];
+                    let genderVotes = {};
+                    let classVotes = {};
+                    let classSexInfo = [[],[]];
+                    let total = 0;
+                    let hoursOfVoting = Math.ceil((settings.endTime._seconds-settings.startTime._seconds)/3600)
+                    let totalByHour = [];
+                    for(h=0;h<hoursOfVoting;h++){
+                        totalByHour.push(0);
+                    }
+                    candidatesSnapshot.forEach(doc=>{
+                        candidates[0].push({...doc.data(), id:doc.id});
+                        candidates[1].push({total:0,sex:{},classes:{}});
+                    })
+                    votesSnapshot.forEach(doc=>{
+                        let vote = doc.data();       
+                        if(settings.startTime._seconds < vote.submitDate._seconds && vote.submitDate._seconds < settings.endTime._seconds){
+                            for(h=0;h<hoursOfVoting;h++){
+                                if(settings.startTime._seconds + 3600*h < vote.submitDate._seconds && vote.submitDate._seconds < settings.startTime._seconds + 3600*(h+1)){
+                                    totalByHour[h] +=1;
+                                }
+                            }
+                            total ++;
+                            if(classSexInfo[0].includes(vote.className)){
+                                if(classSexInfo[1][classSexInfo[0].indexOf(vote.className)][vote.sex] === undefined){
+                                    classSexInfo[1][classSexInfo[0].indexOf(vote.className)][vote.sex] = 1;
+                                }
+                                else{
+                                    classSexInfo[1][classSexInfo[0].indexOf(vote.className)][vote.sex] +=1;
+                                }
+                            }else{
+                                classSexInfo[0].push(vote.className);
+                                classSexInfo[1].push({[vote.sex]:1});
+                            }
+                            for(i = 0;i<candidates[0].length;i++){
+                                if(candidates[0][i].id === vote.submitVote){
+                                    candidates[1][i].total +=1;
+                                    if(genderVotes[vote.sex] === undefined){
+                                        genderVotes[vote.sex] = 1;
+                                    }
+                                    else{
+                                        genderVotes[vote.sex] +=1;
+                                    }
+                                    if(classVotes[vote.className] === undefined){
+                                        classVotes[vote.className] = 1;
+                                    }
+                                    else{
+                                        classVotes[vote.className] +=1;
+                                    }
+                                    if(candidates[1][i].sex[vote.sex] === undefined){
+                                        candidates[1][i].sex[vote.sex] = 1;
+                                    }
+                                    else{
+                                        candidates[1][i].sex[vote.sex] += 1;
+                                    }
+                                    if(candidates[1][i].classes[vote.className] === undefined){
+                                        candidates[1][i].classes[vote.className] = 1;
+                                    }
+                                    else{
+                                        candidates[1][i].classes[vote.className] += 1;
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    let byCandidates = [];
+                    for(i = 0;i<candidates[0].length;i++){
+                        byCandidates.push({fullName:candidates[0][i].fullName,
+                            className:candidates[0][i].className,
+                            total:candidates[1][i].total,
+                            sexVotesInfo:candidates[1][i].sex,
+                            classVotesInfo:candidates[1][i].classes});
+                    }
+                    let classSexJson = [];
+                    for(i = 0;i<classSexInfo[0].length;i++){
+                       classSexJson.push({className:classSexInfo[0][i],sexInfo:classSexInfo[1][i]});
+                    }
+                    let totalByHourJson = []
+                    for(i = 0;i<totalByHour.length;i++){
+                       totalByHourJson.push({hour: i.toString(),VotesWithinThatHour: totalByHour[i].toString() })
+                    }
+                    response = {total:total,byCandidates:byCandidates,genderVotes:genderVotes,classVotes:classVotes,classSexInfo:classSexJson,totalByHour:totalByHourJson};
+                    return  res.status(200).send(response); 
+
+
+
+
+                }else{
+                    return  res.status(500).send({errorMessage:"Nie możesz jeszcze odczytać statystyk"});  
+                }
+            });
+        }
+        else if(specialCase === "totalVotes"){
             let classes = [[],[]];
             let total = 0;
             Promise.all([query.get(),db.collection("settings").doc("1").get()]).then(([snapshot,settingsSnap])=>{
@@ -244,5 +343,14 @@ app.get('/api/settings',(req,res) => {
 app.get('/api/ableToVote',authMiddleware("ableToVote"),(req,res) => {      
     return res.status(500).send({errorDescription: "you should have seen this ups"});
 });
+app.get('/api/votes/stats',(req,res) => {      
+    try{
+        sendListResponse(db.collection("vote"),res,"stats");
+    }
+    catch(error){
+        return res.status(500).send({errorDescription: error});
+    }   
+});
+
 //Export the api to Firebase 
 exports.app = functions.region('europe-west1').https.onRequest(app);
